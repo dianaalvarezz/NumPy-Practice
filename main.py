@@ -19,3 +19,5 @@ plt.title('Plot of Data from ai0.npy')
 plt.xlabel('Index')
 plt.ylabel('Value')
 plt.show()
+
+# Need to add array
