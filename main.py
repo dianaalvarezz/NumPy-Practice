@@ -21,3 +21,4 @@ plt.ylabel('Value')
 plt.show()
 
 # Need to add array
+array[:100]
