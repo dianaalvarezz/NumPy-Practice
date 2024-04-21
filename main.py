@@ -13,13 +13,17 @@ with open('ai0.npy', 'wb') as file:
 # Load the .npy file
 data = np.load('ai0.npy')
 
-# Plot the data
-plt.plot(data, color='pink')
-plt.title('Plot of Data from ai0.npy')
-plt.xlabel('Index')
-plt.ylabel('Value')
+# Square the data to emphasize higher amplitudes
+squared_data = data**2
+
+# Compute the Fourier Transform of the squared data
+fft_data = np.fft.fft(squared_data)
+frequencies = np.fft.fftfreq(len(fft_data))
+
+# Use slicing to plot every 100th sample
+plt.figure(figsize=(10, 6))
+plt.plot(frequencies[::100], np.abs(fft_data)[::100], color='pink')
+plt.title('Frequency Spectrum of Squared Signal (Every 100th Sample)')
+plt.xlabel('Frequency (Hz)')
+plt.ylabel('Magnitude')
 plt.show()
-
-# Need to add array
-array[:100]
-
