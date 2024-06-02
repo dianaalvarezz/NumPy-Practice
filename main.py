@@ -1,29 +1,38 @@
-import requests
 import numpy as np
 import matplotlib.pyplot as plt
+import requests
 
-# URL to the .npy file
-url = 'https://github.com/Duchstf/quench-detector/raw/signal-analysis/sample-data/Ramp27/ai0.npy'
+# Download the file
+file_url = 'https://github.com/Duchstf/quench-detector/blob/signal-analysis/sample-data/Ramp21/ai0.npy?raw=true'
+local_filename = 'ai0.npy'
 
-# Download the .npy file
-response = requests.get(url)
-with open('ai0.npy', 'wb') as file:
-    file.write(response.content)
+# Use requests to download the file
+response = requests.get(file_url)
+with open(local_filename, 'wb') as f:
+    f.write(response.content)
 
-# Load the .npy file
-data = np.load('ai0.npy')
+# Load the downloaded .npy file
+signal = np.load(local_filename)
 
-# Square the data to emphasize higher amplitudes
-squared_data = data**2
+# Define the sampling frequency
+Fs = 100_000  # 100 kHz
 
-# Compute the Fourier Transform of the squared data
-fft_data = np.fft.fft(squared_data)
-frequencies = np.fft.fftfreq(len(fft_data))
+# Calculate the Fourier Transform of the signal
+fft_result = np.fft.fft(signal)
+n = len(signal)
+f = np.fft.fftfreq(n, 1/Fs)
 
-# Use slicing to plot every 100th sample
-plt.figure(figsize=(10, 6))
-plt.plot(frequencies[::100], np.abs(fft_data)[::100], color='pink')
-plt.title('Frequency Spectrum of Squared Signal (Every 100th Sample)')
-plt.xlabel('Frequency (Hz)')
+# Compute the magnitude of the FFT result
+magnitude = np.abs(fft_result)
+
+# Only take the positive part of the frequency spectrum
+f_positive = f[:n//2]
+magnitude_positive = magnitude[:n//2]
+
+# Plot the magnitude spectrum
+plt.plot(f_positive, magnitude_positive)
+plt.xlim([0, 50000])  # Limiting to Nyquist frequency (Fs/2)
+plt.xlabel('Frequency [Hz]')
 plt.ylabel('Magnitude')
+plt.title('FFT Magnitude Spectrum')
 plt.show()
